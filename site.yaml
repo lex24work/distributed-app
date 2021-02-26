@@ -18,6 +18,6 @@
   become: true
   hosts: backend-servers
   vars_files:
-    - ./roles/backend/vars/dirs.yaml
+    - ./roles/backend/vars/vars.yaml
   roles:
     - { role: backend, tags: [backend]}

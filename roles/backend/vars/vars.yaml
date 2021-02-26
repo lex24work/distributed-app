@@ -1,0 +1,10 @@
+app_directory_prefix: /home/vagrant/app
+postgres_version: 12.3-alpine
+
+os_environment:
+    - key: POSTGRES_DB
+      value: db_name
+    - key: POSTGRES_USER
+      value: db_user
+    - key: POSTGRES_PASSWORD
+      value: db_pass
