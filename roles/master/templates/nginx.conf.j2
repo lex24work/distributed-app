@@ -1,0 +1,10 @@
+upstream loadbalancer {
+    {% for host in groups['backend-servers'] %}
+      server {{ hostvars[host]['ansible_eth1']['ipv4']['address'] }}:{{ hostvars[host]['http_port'] }} weight=1;
+    {% endfor %}
+}
+
+server {
+  location / {
+  proxy_pass http://loadbalancer;
+}}

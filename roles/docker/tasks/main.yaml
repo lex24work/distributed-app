@@ -1,0 +1,42 @@
+-   name: install apt-packages
+    apt:
+        name:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg2
+            - software-properties-common
+            - python3-pip
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+-   name: install pip3-packages
+    pip:
+        name:
+            - docker-compose
+            - docker
+
+-   name: install repo key
+    apt_key:
+        url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+        state: present
+
+-   apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+        state: present
+
+-   name: install docker
+    apt:
+        name:
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+        update_cache: yes
+        cache_valid_time: 3600
+
+-   name: install Docker Compose
+    get_url:
+        url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 0755

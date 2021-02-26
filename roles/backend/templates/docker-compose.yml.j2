@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  go:
+    build:
+      context: ./app
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    ports:
+      - "{{ http_port }}:{{ http_port }}"
+    user: app:app
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PORT={{ http_port }}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=db_user
+      - DB_PASSWORD=db_pass
+      - DB_NAME=db_name
+      - NODE_NAME={{ node_name }}
+    networks:
+      - app-net
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+
+  db:
+    image: postgres:12.3-alpine
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_PASSWORD=db_pass
+      - POSTGRES_DB=db_name
+      - POSTGRES_USER=db_user
+    networks:
+      - app-net
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+
+networks:
+  app-net:

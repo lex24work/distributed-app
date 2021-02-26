@@ -1,0 +1,32 @@
+-   name: Create app a directory
+    file:
+        path: "{{ app_directory_prefix }}/"
+        state: directory
+        mode: '0755'
+
+-   name: Create app a directory
+    file:
+        path: "{{ app_directory_prefix }}/app/"
+        state: directory
+        mode: '0755'
+
+-   name: generate docker-compose config
+    template:
+        src: "docker-compose.yml.j2"
+        dest: "{{ app_directory_prefix }}/docker-compose.yml"
+        mode: 0644
+
+-   name: copy app files
+    copy:
+        src: "app/"
+        dest: "{{ app_directory_prefix }}/app/"
+
+-   name: copy init-db files
+    copy:
+        src: "db-init/"
+        dest: "{{ app_directory_prefix }}/db-init/"
+
+-   name: Create and start services
+    community.docker.docker_compose:
+        project_src: "{{ app_directory_prefix }}"
+    register: output

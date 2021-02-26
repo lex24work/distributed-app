@@ -1,0 +1,23 @@
+- name: ensure docker
+  become: true
+  hosts: all
+  vars_files:
+    - ./roles/docker/vars/versions.yaml
+  roles:
+  - docker
+
+- name: configure master node
+  become: true
+  hosts: master-servers
+  vars_files:
+    - ./roles/master/vars/dirs.yaml
+  roles:
+  - { role: master, tags: [master]}
+
+- name: configure backend node
+  become: true
+  hosts: backend-servers
+  vars_files:
+    - ./roles/backend/vars/dirs.yaml
+  roles:
+    - { role: backend, tags: [backend]}
